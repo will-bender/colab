@@ -1,0 +1,21 @@
+/**
+ * 
+ */
+package parsing_csv;
+
+import java.io.Serializable;
+
+/**
+ * @author will
+ *
+ */
+public class ParseCSV_HeaderBean implements Serializable {
+
+	/**
+	 * 
+	 */
+	public ParseCSV_HeaderBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

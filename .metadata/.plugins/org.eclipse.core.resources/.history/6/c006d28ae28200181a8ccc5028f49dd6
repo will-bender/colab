@@ -1,0 +1,89 @@
+package parsing_csv;
+
+import java.util.Iterator;
+import java.util.logging.Logger;
+import com.google.common.base.Throwables;
+
+import java.sql.*;
+
+
+
+public class DatabaseConnect {
+	
+	 private final String USERNAME = "escolab";
+	 private final String PASSWORD = "0ykYeFtrccpQvm0x";
+	 private final String DRIVER = "jdbc:mysql://";
+	 private final String SERVER = "localhost"; //java can only connect on vulcan
+	 private final String PORT = "3306";
+	 private final String DB_NAME = "escolab";
+	 private final String STATEMENT = DRIVER+SERVER+":"+PORT+"/"+DB_NAME;
+	  
+	 public  final ProblemLog troubleLog = new ProblemLog("javaLog");
+	 public  final Logger log = troubleLog.logger;
+		
+	 private Iterator<CsvParsing> beanIterator;
+	 private Connection con = null;
+	 private Statement stmt = null;
+	 ResultSet rst = null;
+
+	 
+	public DatabaseConnect(Iterator<CsvParsing> beanIterator) {
+		this.beanIterator = beanIterator;
+	}
+	
+	
+	
+	public void connect()  {
+		//connect to the database
+	
+		try {	
+			this.con = DriverManager.getConnection(STATEMENT,USERNAME,PASSWORD);
+		}
+		catch(SQLException sqlException) {
+			log.severe(sqlException.getMessage());
+			System.exit(12);
+		}
+	}
+	
+	public void showExample() {
+		try {
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("select * from Pod");
+			String resultant = "";
+			while(rst.next()) {
+				System.out.println(rst.getString(1));
+				resultant.concat(rst.getString(1));
+			}
+			log.info(resultant);
+		} catch (SQLException sqlException) {
+			log.severe(sqlException.getMessage());
+		}
+		
+		
+	}
+	
+	
+	public Object sanitize() {
+		
+		
+		
+		return beanIterator;
+	}
+	
+	public void last_record() {
+		//get most current record for checking
+	}
+	
+	public void insert() {
+		//insert new record
+	}
+	
+	public void end_connect() {
+		//clean up and end the connection to the database
+	}
+	
+	
+	
+	
+	
+}

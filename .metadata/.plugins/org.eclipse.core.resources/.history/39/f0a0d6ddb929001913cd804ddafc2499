@@ -1,0 +1,128 @@
+package parsing_csv;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.SocketException;
+
+import org.apache.commons.net.ftp.Configurable;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
+
+public class outboundFTP extends FTP implements Configurable{
+
+	String serverAddress, username, password,filenamePath;
+	int port = 21;
+	String javaFilePath = "/Users/will/data"; 
+	FTPClient ftpClient;
+
+	public void start_test() {
+		System.out.println("Starting the test");
+		start("dlpuser@dlptest.com", "puTeT3Yei1IJ4UYT7q0r", "ftp.dlptest.com", "/");
+	}
+	
+	public void start(String username, String password, String serverAddress, String filenamePath) {
+		
+	ftpClient = new FTPClient();
+	setGlobalVariables(username, password, serverAddress, filenamePath);
+	try {
+		ftpClient.connect(serverAddress, port);
+		System.out.println("Connected to: "+serverAddress+" "+ftpClient.getReplyString());
+		ftpClient.login(username, password);
+		ftpClient.enterLocalPassiveMode();
+//		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+		
+		int reply = ftpClient.getReplyCode();
+		if(!FTPReply.isPositiveCompletion(reply)) {
+			ftpClient.disconnect();
+			System.out.println("FTP server refused connect");
+			System.exit(1);
+		}
+		
+		
+		
+		
+			System.out.println(ftpClient.listFiles().length);
+		
+		
+		
+		File downloadedFilePath = new File(javaFilePath);
+		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadedFilePath));
+        System.out.println("Attempting to retrieve the file");
+		boolean success = ftpClient.retrieveFile(filenamePath, outputStream);
+        outputStream.close();
+        
+        if(success) {
+        	System.out.println("File downloaded successfully");
+        }
+        else {
+        	System.out.println("File download error: try putting a retry method or something in here");
+        	System.out.println("FTP CONNECTED: "+ ftpClient.isConnected());
+        	System.out.println("FTP CONNECTED: "+ ftpClient.getStatus());
+        	System.exit(1);
+        }	
+	}
+	catch(IOException e) {
+		System.out.println("Error: "+ e.getMessage());
+		e.printStackTrace();
+	}
+	finally {
+		try {
+			if(ftpClient.isConnected()) {
+				ftpClient.logout();
+				ftpClient.disconnect();
+			}
+		}
+		catch(IOException e) {
+			System.out.println("Error: "+ e.getMessage());
+			e.printStackTrace();
+		}
+	}
+			
+	
+	
+	
+	
+		
+	}
+	
+	public void setGlobalVariables(String username, String password, String serverAddress, String filenamePath) {
+		this.username = username;
+		this.password = password;
+		this.serverAddress = serverAddress;
+		this.filenamePath = filenamePath;
+	}
+	
+	public void diagnosticInformation() throws SocketException, IOException {
+		ftpClient.connect(serverAddress, port);
+		System.out.println("Connection: "+ftpClient.getReplyString());
+		ftpClient.login(username, password);
+//		ftpClient.enterLocalPassiveMode();
+		System.out.println("Login: "+ ftpClient.getReplyString());
+		System.out.println("Status info: "+ftpClient.getStatus());
+		System.out.println("Connected? : "+ftpClient.isConnected());
+		System.out.println("Availabile? : "+ftpClient.isAvailable());
+		if(ftpClient.isConnected()) {
+			ftpClient.logout();
+			ftpClient.disconnect();
+		}
+	}
+	
+	public void listFilesOnServer() throws IOException {
+		System.out.println("List of files on the server: ");
+		for (int fileDetails = 0; fileDetails < ftpClient.listFiles().length; fileDetails++) {
+			System.out.println(ftpClient.listFiles()[fileDetails]);
+		}
+	}
+	
+	
+	public void configure(FTPClientConfig config) {
+		
+	}
+
+}

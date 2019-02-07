@@ -1,0 +1,26 @@
+package parsing_csv;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.List;
+
+import com.opencsv.bean.CsvToBeanBuilder;
+
+public class ParseCSV_Main {
+
+	public static void main(String[] args) {
+		System.out.println("Test OK");
+		
+		try {
+			@SuppressWarnings("rawtypes","unchecked")
+			List<ParseCSV_HeaderBean> beans = new CsvToBeanBuilder(new FileReader("testData.csv"))
+				       .withType(ParseCSV_HeaderBean.class).build().parse();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}

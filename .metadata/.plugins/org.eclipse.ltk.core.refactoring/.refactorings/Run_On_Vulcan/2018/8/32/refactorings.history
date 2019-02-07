@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Move &apos;WNF-S007.csv&apos; to &apos;Run_On_Vulcan&apos;" description="Move &apos;WNF-S007.csv&apos; to &apos;Run_On_Vulcan&apos;" destination="/Run_On_Vulcan" element1="src/WNF-S007.csv" flags="7" id="org.eclipse.ltk.core.refactoring.move.resources" resources="1" stamp="1533964594881" updateReferences="true"/>&#x0A;&#x0A;</session>

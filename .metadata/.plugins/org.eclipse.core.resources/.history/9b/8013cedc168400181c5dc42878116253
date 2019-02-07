@@ -1,0 +1,331 @@
+package parsing_csv;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Logger;
+
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvDate;
+
+public class CsvParsing implements Serializable {
+
+	
+	@CsvBindByName
+	private String Name;
+
+	@CsvBindByName // (column = "Time")
+	@CsvDate("M/dd/yy HH:mm")
+	private Date Time;
+
+	@CsvBindByName
+	private double Batt_Volt;
+
+	@CsvBindByName
+	private double Temp;
+
+	@CsvBindByName
+	private double pH;
+
+	@CsvBindByName
+	private double pHmv;
+
+	@CsvBindByName
+	private double Cond;
+
+	@CsvBindByName
+	private double DOpct;
+
+	@CsvBindByName
+	private double DOmgl;
+
+	@CsvBindByName
+	private double DOgain;
+
+	@CsvBindByName
+	private double Turb;
+
+	@CsvBindByName
+	private double Depth;
+
+	@CsvBindByName
+	private double Lat_dd;
+
+	@CsvBindByName
+	private double Long_dd;
+
+	@CsvBindByName
+	private double GPStime;
+
+	//Needed to set as string then convert to double or any number later. OpenCSV would fail to conv 
+	@CsvBindByName
+	private String Num_Sats;
+
+	public CsvParsing() {
+		// empty
+	}
+
+	public Object getANY(int position) {
+		// returns every value except for Time which is in TIME
+		// there are 15 elements in the array
+		Object[] getMethods = { 1214,getName(), getTime(), getBatt_Volt(), getTemp(), getpH(), getpHmv(), getCond(),
+				getDOpct(), getDOmgl(), getDOgain(), getTurb(), getDepth(), getLat_dd(), getLong_dd(), getGPStime(),
+				getNum_Sats() };
+	
+		
+		return getMethods[position];
+	}
+
+	/**
+	 * @return the name
+	 */
+	public int getName() {
+		return 7;
+//		return Name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		Name = name;
+	}
+
+	/**
+	 * @return the time
+	 */
+	public java.sql.Date getTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		java.sql.Date sqlTime = new java.sql.Date();
+		return 
+	}
+
+	/**
+	 * @param time
+	 *            the time to set
+	 */
+	public void setTime(Date time) {
+		Time = time;
+	}
+
+	/**
+	 * @return the batt_Volt
+	 */
+	public double getBatt_Volt() {
+		
+		return Batt_Volt ;
+	}
+
+	/**
+	 * @param batt_Volt
+	 *            the batt_Volt to set
+	 */
+	public void setBatt_Volt(double batt_Volt) {
+		Batt_Volt = batt_Volt;
+	}
+
+	/**
+	 * @return the temp
+	 */
+	public double getTemp() {
+		return Temp;
+	}
+
+	/**
+	 * @param temp
+	 *            the temp to set
+	 */
+	public void setTemp(double temp) {
+		Temp = temp;
+	}
+
+	/**
+	 * @return the pH
+	 */
+	public double getpH() {
+		return pH;
+	}
+
+	/**
+	 * @param pH
+	 *            the pH to set
+	 */
+	public void setpH(double pH) {
+		this.pH = pH;
+	}
+
+	/**
+	 * @return the pHmv
+	 */
+	public double getpHmv() {
+		return pHmv;
+	}
+
+	/**
+	 * @param pHmv
+	 *            the pHmv to set
+	 */
+	public void setpHmv(double pHmv) {
+		this.pHmv = pHmv;
+	}
+
+	/**
+	 * @return the cond
+	 */
+	public double getCond() {
+		return Cond;
+	}
+
+	/**
+	 * @param cond
+	 *            the cond to set
+	 */
+	public void setCond(double cond) {
+		Cond = cond;
+	}
+
+	/**
+	 * @return the dOpct
+	 */
+	public double getDOpct() {
+		return DOpct;
+	}
+
+	/**
+	 * @param dOpct
+	 *            the dOpct to set
+	 */
+	public void setDOpct(double dOpct) {
+		DOpct = dOpct;
+	}
+
+	/**
+	 * @return the dOmgl
+	 */
+	public double getDOmgl() {
+		return DOmgl;
+	}
+
+	/**
+	 * @param dOmgl
+	 *            the dOmgl to set
+	 */
+	public void setDOmgl(double dOmgl) {
+		DOmgl = dOmgl;
+	}
+
+	/**
+	 * @return the dOgain
+	 */
+	public double getDOgain() {
+		return DOgain;
+	}
+
+	/**
+	 * @param dOgain
+	 *            the dOgain to set
+	 */
+	public void setDOgain(double dOgain) {
+		DOgain = dOgain;
+	}
+
+	/**
+	 * @return the turb
+	 */
+	public double getTurb() {
+		return Turb;
+	}
+
+	/**
+	 * @param turb
+	 *            the turb to set
+	 */
+	public void setTurb(double turb) {
+		Turb = turb;
+	}
+
+	/**
+	 * @return the depth
+	 */
+	public double getDepth() {
+		return Depth;
+	}
+
+	/**
+	 * @param depth
+	 *            the depth to set
+	 */
+	public void setDepth(double depth) {
+		Depth = depth;
+	}
+
+	/**
+	 * @return the lat_dd
+	 */
+	public double getLat_dd() {
+		return Lat_dd;
+	}
+
+	/**
+	 * @param lat_dd
+	 *            the lat_dd to set
+	 */
+	public void setLat_dd(double lat_dd) {
+		Lat_dd = lat_dd;
+	}
+
+	/**
+	 * @return the long_dd
+	 */
+	public double getLong_dd() {
+		return Long_dd;
+	}
+
+	/**
+	 * @param long_dd
+	 *            the long_dd to set
+	 */
+	public void setLong_dd(double long_dd) {
+		Long_dd = long_dd;
+	}
+
+	/**
+	 * @return the gPStime
+	 */
+	public double getGPStime() {
+		return GPStime;
+	}
+
+	/**
+	 * @param gPStime
+	 *            the gPStime to set
+	 */
+	public void setGPStime(double gPStime) {
+		GPStime = gPStime;
+	}
+
+	/**
+	 * @return the num_Sats
+	 */
+	public double getNum_Sats() {
+		double num_sats = (double) 0.000;
+		try {
+			num_sats = Double.valueOf(Num_Sats);
+		}
+		catch(Exception e) {
+			//log that I couldnt convert number of satellites to a double
+		}
+		return num_sats;
+	}
+
+	/**
+	 * @param num_Sats
+	 *            the num_Sats to set
+	 */
+	public void setNum_Sats(String num_Sats) {
+		Num_Sats = num_Sats;
+	}
+
+}

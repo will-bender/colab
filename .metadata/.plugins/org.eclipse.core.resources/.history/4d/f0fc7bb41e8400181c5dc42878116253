@@ -1,0 +1,131 @@
+package parsing_csv;
+
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.google.common.base.Throwables;
+import com.opencsv.bean.CsvToBeanBuilder;
+
+ public class Main {
+	 //Start Logging
+	public static final ProblemLog troubleLog = new ProblemLog("javaLog");
+	public static final Logger log = troubleLog.logger;
+	//End Logging
+	
+	public static void main(String[] args) {
+		Iterator<CsvParsing> beanIterator = null;
+		DatabaseConnect dbConnect = null;
+		System.out.println("Test OK");
+		
+		beanIterator = getBeans_getCsvData();
+		if (beanIterator != null) {
+			System.out.println("Will show you the first bean in the list");
+			printFirstBean(beanIterator);
+		} else {
+			System.out.println("Trouble reading in Bean Iterator");
+			log.info("Trouble reading in Bean Iterator");
+			System.exit(10);
+		}
+		
+		dbConnect = new DatabaseConnect(beanIterator);
+		dbConnect.connect();
+		dbConnect.showExample();
+		dbConnect.insertNewRecord();
+
+
+		
+		
+		
+
+	}// end main method
+	
+	
+	
+	
+	private static Iterator<CsvParsing> getBeans_getCsvData() {
+		try {
+			//@SuppressWarnings({ "rawtypes", "unchecked" })
+			List<CsvParsing> beans = new CsvToBeanBuilder<CsvParsing>(new FileReader("testData.csv"))
+					.withType(CsvParsing.class).build().parse();
+			return beans.iterator();
+			}
+		
+			catch(IllegalStateException illegalState) {
+				log.info(Throwables.getStackTraceAsString(illegalState));
+				System.exit(10);
+			}
+			catch(FileNotFoundException fileNotFound) {
+				log.info(Throwables.getStackTraceAsString(fileNotFound));
+				System.exit(10);
+			}
+		
+		return null; 
+	}
+	
+	
+	
+
+	private static void printFirstBean(Iterator<CsvParsing> beanIterator_M) {
+		// while(beanIterator_M.hasNext()) { // part of printing out entire CSV file
+		CsvParsing aBean = beanIterator_M.next();
+		for (int i = 0; i < 16; i++) {
+			Object aBeanAttribute = null;
+			try {
+				 aBeanAttribute = aBean.getANY(i);
+				 if(aBeanAttribute == null) {
+					 aBeanAttribute = -1;
+				 }
+			}
+			catch(Exception e) {
+				System.out.println("This is a problem "+e.getMessage());
+				System.exit(10);
+			}
+			finally {
+			System.out.print( aBeanAttribute + " | ");
+			}
+		}
+		System.out.println("");
+	}
+	// }	//part of printing out entire CSV file
+
+	@SuppressWarnings("unused")
+	private static void printAllBean(Iterator<CsvParsing> beanIterator_M) {
+		while (beanIterator_M.hasNext()) {
+			CsvParsing aBean = beanIterator_M.next();
+			for (int i = 0; i < 16; i++) {
+				System.out.print(aBean.getANY(i) + " | ");
+			}
+			System.out.println("");
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private static void printBeanBasic(List<CsvParsing> beans) {
+		// manually print bean value
+		System.out.println(beans.get(0).getBatt_Volt());
+	}
+
+}
+
+/*
+ * UNNEEDED STUFF AND RANDOM THINGS
+ * 
+ * System.out.print(aBean.getName() + " | "); System.out.print(aBean.getTime() +
+ * " | "); System.out.print(aBean.getBatt_Volt() + " | ");
+ * System.out.print(aBean.getTemp() + " | "); System.out.print(aBean.getpH() +
+ * " | "); System.out.print(aBean.getpHmv() + " | ");
+ * System.out.print(aBean.getCond() + " | "); System.out.print(aBean.getDOpct()
+ * + " | "); System.out.print(aBean.getDOmgl() + " | ");
+ * System.out.print(aBean.getDOgain() + " | "); System.out.print(aBean.getTurb()
+ * + " | "); System.out.print(aBean.getDepth() + " | ");
+ * System.out.print(aBean.getLat_dd() + " | ");
+ * System.out.print(aBean.getLong_dd() + " | ");
+ * System.out.print(aBean.getGPStime() + " | ");
+ * System.out.print(aBean.getNum_Sats() + " | ");
+ * 
+ * 
+ */

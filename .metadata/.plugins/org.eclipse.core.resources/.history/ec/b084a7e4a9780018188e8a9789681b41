@@ -1,0 +1,18 @@
+import java.io.FileReader;
+import java.util.Map;
+
+
+
+
+
+public class Run_on_Vulcan {
+
+	public static void main(String[] args) {
+		System.out.println("ok Start");
+	    
+		
+		
+
+	}
+
+}

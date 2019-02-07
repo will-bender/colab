@@ -1,0 +1,71 @@
+
+package parsing_csv;
+
+import java.io.Serializable;
+
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvDate;
+
+
+public class ParseCSV_HeaderBean implements Serializable {
+	
+	@CsvBindByName
+	private String Name;
+	
+	@CsvBindByName//(column = "Time")
+	@CsvDate("")
+	
+	@CsvBindByName
+	private String Batt_Volt;
+	
+	@CsvBindByName
+	private String Temp;
+	
+	@CsvBindByName
+	private String pH;
+	
+	@CsvBindByName
+	private String pHmv;
+	
+	@CsvBindByName
+	private String Cond;
+	
+	@CsvBindByName
+	private String DOpct;
+	
+	@CsvBindByName
+	private String DOmgl;
+	
+	@CsvBindByName
+	private String DOgain;
+	
+	@CsvBindByName
+	private String Turb;
+	
+	@CsvBindByName
+	private String Depth;
+	
+	@CsvBindByName
+	private String Lat_dd;
+	
+	@CsvBindByName
+	private String Long_dd;
+	
+	@CsvBindByName
+	private String GPStime;
+	
+	@CsvBindByName
+	private String Num_Sats;
+	
+	
+	
+	
+	
+	
+	public ParseCSV_HeaderBean() {
+		//empty
+	}
+	
+	
+	
+}

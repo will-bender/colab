@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package parsing_csv;
+
+import java.io.Serializable;
+
+import com.opencsv.bean.CsvBindByName;
+
+
+public class ParseCSV_HeaderBean implements Serializable {
+	
+	@CsvBindByName
+	private String name;
+	
+	
+	
+	public ParseCSV_HeaderBean() {
+		//empty
+	}
+	
+	
+	
+	
+	
+	
+
+}

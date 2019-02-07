@@ -1,0 +1,18 @@
+package parsing_csv;
+
+import java.io.FileReader;
+import java.util.List;
+
+import com.opencsv.bean.CsvToBeanBuilder;
+
+public class ParseCSV_Main {
+
+	public static void main(String[] args) {
+		System.out.println("Test OK");
+		
+		List<ParseCSV_HeaderBean> beans = new CsvToBeanBuilder(new FileReader("testData.csv"))
+			       .withType(Visitors.class).build().parse();
+
+	}
+
+}

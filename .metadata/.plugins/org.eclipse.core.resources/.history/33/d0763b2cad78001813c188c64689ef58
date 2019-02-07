@@ -1,0 +1,12 @@
+package parsing_csv;
+
+public class ParseCSV_Main {
+
+	public static void main(String[] args) {
+		System.out.println("Test OKss");
+		
+		
+
+	}
+
+}
