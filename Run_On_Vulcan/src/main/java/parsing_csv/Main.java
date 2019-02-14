@@ -10,19 +10,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+
+//TODO: not importing for me(I guess gratel issue) ALSO comment code chunks that are do a specific task a say what it is
 import com.google.common.base.Throwables;
 import com.opencsv.bean.CsvToBeanBuilder;
 
  public class Main {
+
 	 //Start Logging
 	public static final ProblemLog troubleLog = new ProblemLog("choateLOG");
 	public static final Logger log = troubleLog.logger;
 	//End Logging
 	
 	public static void main(String[] args) {
-		
+		//TODO: Clean this Main method up
 		
 		try {
+
 			outboundFTP ftp = new outboundFTP();
 //			ftp.diagnosticInformation();
 			ftp.start_test();
@@ -31,14 +35,15 @@ import com.opencsv.bean.CsvToBeanBuilder;
 		catch(Exception e) {
 			System.out.println("Error: "+ e);
 		}
-		
-		
+
+		//TODO: Change name and comment
 		Iterator<CsvParsing> beanIterator = null;
 		DatabaseConnect dbConnect = null;
 		System.out.println("Test OK");
 		
 		try {
-		beanIterator = getBeans_getCsvData();
+			//TODO: what is this (better method name)
+			beanIterator = getBeans_getCsvData();
 		}
 		catch (Exception e) {
 			log.severe("Issue getting Bean: "+ Throwables.getStackTraceAsString(e));
@@ -66,10 +71,10 @@ import com.opencsv.bean.CsvToBeanBuilder;
 		
 
 	}// end main method
-	
-	
-	
-	
+
+
+
+	 //TODO: name changes
 	private static Iterator<CsvParsing> getBeans_getCsvData() {
 		try {
 			//@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -89,7 +94,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 		
 		return null; 
 	}
-	
+	 //TODO: WTF is this (i guess it passes the first row into the log
 	private static void logFirstBean(Iterator<CsvParsing> beanIterator_M) {
 		String formattedString = "";
 		CsvParsing aBean = beanIterator_M.next();
@@ -112,8 +117,8 @@ import com.opencsv.bean.CsvToBeanBuilder;
 		}
 		log.info("Most Current Bean: \n" + formattedString);
 	}
-	
 
+	 //TODO: You have burned the beans
 	private static void printFirstBean(Iterator<CsvParsing> beanIterator_M) {
 		// while(beanIterator_M.hasNext()) { // part of printing out entire CSV file
 		CsvParsing aBean = beanIterator_M.next();
@@ -138,6 +143,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 	}
 	// }	//part of printing out entire CSV file
 
+	 //TODO: if unused comment out
 	@SuppressWarnings("unused")
 	private static void printAllBean(Iterator<CsvParsing> beanIterator_M) {
 		while (beanIterator_M.hasNext()) {

@@ -9,7 +9,8 @@ import java.util.logging.Logger;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
-
+//TODO: better name for class like IntervalData or PeriodData because it holds the data of a row IDK I guess it makes
+//sense
 public class CsvParsing implements Serializable {
 
 	@CsvBindByName

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.google.common.base.Throwables;
-
+//TODO: this looks good
 public class ProblemLog{
 
 	public static Logger logger;

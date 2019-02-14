@@ -9,7 +9,7 @@ import java.sql.*;
 public class DatabaseConnect {
 	public final ProblemLog troubleLog = new ProblemLog("choateLOG");
 	public final Logger log = troubleLog.logger;
-
+	//TODO: Hard code NONO
 	private final String USERNAME = "escolab";
 	private final String PASSWORD = "$ondescool";
 	private final String DRIVER = "jdbc:mysql://";
@@ -17,10 +17,13 @@ public class DatabaseConnect {
 	private final String PORT = "3306";
 	private final String DB_NAME = "escolab";
 	private final String STATEMENT = DRIVER + SERVER + ":" + PORT + "/" + DB_NAME;
-	
+	//TODO: End Big NONO
+
+	//TODO: Rid your self of dem bean names and use better var names for the sake of readablity
 	private Iterator<CsvParsing> beanIterator;
 	private Connection con = null;
 	private Statement stmt = null;
+
 	ResultSet rst = null;
 	PreparedStatement insertPodLocation = null;
 	PreparedStatement insertSensorValue = null;
@@ -31,6 +34,7 @@ public class DatabaseConnect {
 			+ "Location.time_stamp = (SELECT MAX(time_stamp) FROM Location)";
 
 
+	//TODO:clean this mess up possibly one per line
 
 	// enumeration of all the constant DB PARAMETERS
 	private enum PARAMS {
@@ -55,7 +59,7 @@ public class DatabaseConnect {
 		}
 
 	}
-
+	//TODO: the dam beans bro
 	public DatabaseConnect(Iterator<CsvParsing> beanIterator) {
 		this.beanIterator = beanIterator;
 	}
@@ -69,7 +73,7 @@ public class DatabaseConnect {
 			System.exit(12);
 		}
 	}
-
+	//TODO:??????????
 	public void checkFlags() {
 		// look for flagged data, last 10 records
 	}
@@ -77,7 +81,7 @@ public class DatabaseConnect {
 	public void last_record() {
 		// get most current record for checking
 	}
-
+	//TODO: Comments and cleaning
 	public void insertNewRecord() {
 		// insert new record
 		String STMT_podLocation = "INSERT " + "INTO " + "Location (pod_id,deployment_id,time_stamp,latitude,"
@@ -273,7 +277,7 @@ public class DatabaseConnect {
 	// }
 	// System.out.println("");
 	// }
-
+	//TODO: need to close the stuff up
 	public void end_connect() {
 		// clean up and end the connection to the database
 	}

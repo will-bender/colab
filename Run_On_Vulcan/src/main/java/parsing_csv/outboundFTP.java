@@ -27,35 +27,23 @@ public class outboundFTP extends FTP implements Configurable{
 	}
 	
 	public void start(String username, String password, String serverAddress, String filenamePath) throws IOException {
-		
-	ftpClient = new FTPClient();
-	setGlobalVariables(username, password, serverAddress, filenamePath);
-	
-	try {
-		connect();
-		listFilesOnServer();
-		diagnosticInformation();
-		
-		
-			
-		download();
-		
-		
-			
-	}
-	catch(IOException e) {
-		System.out.println("Error: "+ e.getMessage());
-		e.printStackTrace();
-	}
-	finally {
-		disconnect();
-	}
-			
-	
-	
-	
-	
-		
+		ftpClient = new FTPClient();
+		setGlobalVariables(username, password, serverAddress, filenamePath);
+		try {
+			connect();
+			listFilesOnServer();
+			diagnosticInformation();
+
+			download();
+
+		}
+		catch(IOException e) {
+			System.out.println("Error: "+ e.getMessage());
+			e.printStackTrace();
+		}
+		finally {
+			disconnect();
+		}
 	}
 	
 	public void setGlobalVariables(String username, String password, String serverAddress, String filenamePath) {
