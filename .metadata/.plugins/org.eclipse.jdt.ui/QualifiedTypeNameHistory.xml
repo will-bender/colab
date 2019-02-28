@@ -26,4 +26,5 @@
 <fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="org.apache.commons.net.ftp.FTP"/>
 <fullyQualifiedTypeName name="org.apache.commons.net.ftp.FTPReply"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>
