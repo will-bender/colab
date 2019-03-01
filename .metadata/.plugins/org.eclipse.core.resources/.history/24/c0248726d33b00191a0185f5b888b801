@@ -1,0 +1,14 @@
+package parsing_csv;
+
+public class Pod {
+
+	private int id, pod_id, active,debug ;
+	
+	public Pod() {
+		
+	}
+	
+	
+	
+	
+}

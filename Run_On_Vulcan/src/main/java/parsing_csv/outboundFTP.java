@@ -98,12 +98,13 @@ public class outboundFTP extends FTP implements Configurable{
         	System.out.println("File download error: " + ftpClient.getReplyString());
         	System.out.println("Check that File is actually on the Pod");
         	System.out.println("Retrying Smart Download");
-//        	trySmartDownloadFile();
+        	trySmartDownloadFile();
         }
 	}
 	
+	//If we couldn't find the file that was listed in the db then we should attempt to download a file with the generic file pattern
 	public void trySmartDownloadFile() throws IOException {
-		String fileName = "", fileNamePattern = "WNF";
+		String fileName = "", fileNamePattern = "aes";
 		File dynamicDownloadPath;
 		OutputStream outputStream;
 		ArrayList<File> Files = new ArrayList<File>();
@@ -114,6 +115,7 @@ public class outboundFTP extends FTP implements Configurable{
 				outputStream = new BufferedOutputStream(new FileOutputStream(dynamicDownloadPath));
 				ftpClient.retrieveFile(filenamePath, outputStream);
 		        outputStream.close();
+		        System.out.println("File: "+fileName+" Downloaded Smartly");
 //				Files.add(ftpClient.li);
 			}
 			}

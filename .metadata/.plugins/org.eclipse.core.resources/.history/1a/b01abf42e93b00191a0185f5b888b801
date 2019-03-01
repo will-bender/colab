@@ -1,0 +1,76 @@
+package parsing_csv;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	List<Pod> listOfPods;
+	
+	
+	public void getListOfPodsInDB() {
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		
+		setListOfPods(dbConnect.getActivePods());
+		removeDuplicatePods();
+	}
+
+
+	public List<Pod> getListOfPods() {
+		return listOfPods;
+	}
+
+
+	public void setListOfPods(List<Pod> listOfPods) {
+		this.listOfPods = listOfPods;
+	}
+	
+	//When two pods with two Pod_id's are present remove the pod with the lower "id" parameter.
+	//This method exists when someone forgets to switch the "active" parameter in the database. This is problematic because if there are two active pods with
+	//the same pod_id's then we will unknowingly add data to both deployments.
+	//After the pod is re-deployed, it's former deployment should be marked as active = 0;
+	public void removeDuplicatePods() {
+		//assuming that pod_id and id could be null im using a try catch
+		//create an array of pod_id's
+//		int[] pod_ids = new int[getListOfPods().size()];
+		ArrayList<Integer> pod_ids = new ArrayList<Integer>();
+		try {
+			for(Pod pod: getListOfPods()) {
+				pod_ids.add(pod.getPod_id());
+			}
+			
+			//stack overflow: https://stackoverflow.com/questions/562894/java-detect-duplicates-in-arraylist
+			//check the sizes of hashset and list if there is a discrepancy then there is a duplicate. This is a cheap method for looking for duplicates
+			Set<Integer> set = new HashSet<Integer>(pod_ids);
+			if(set.size() == pod_ids.size()) {
+				//there are no duplicates, return
+				return;
+			}
+			//There are duplicates. now to find those duplicates
+//			Iterator<Integer> iterable_pod_ids = pod_ids.iterator();
+//			while (iterable_pod_ids.hasNext()) {
+//				if(set.contains(o))
+//			}
+			
+			for(Pod pod: getListOfPods()) {
+				
+			}
+				
+		}
+		catch (Exception e){
+			System.out.println("Put a logger statement here there was a null pod_id or id value");
+		}
+		
+	}
+	
+	
+	
+}
+

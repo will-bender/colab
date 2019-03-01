@@ -1,0 +1,45 @@
+package parsing_csv;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.google.common.base.Throwables;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	List<Pod> listOfPods;
+	
+	void findDeploymentsOnDB () throws SQLException{
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		ResultSet rst = dbConnect.getActivePods();
+		
+	}
+	
+}
+public void showExample() {
+	try {
+		stmt = con.createStatement();
+		rst = stmt.executeQuery("select * from Pod");
+		String resultant = "";
+		while (rst.next()) {
+			System.out.println(rst.getString(1));
+			resultant = resultant.concat(rst.getString(1));
+		}
+		log.info(resultant);
+	} catch (SQLException sqlException) {
+		log.severe(Throwables.getStackTraceAsString(sqlException));
+	} finally {
+		try {
+			rst.close();
+			stmt.close();
+		} catch (SQLException sqlException) {
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+
+		}
+	}
+}
+

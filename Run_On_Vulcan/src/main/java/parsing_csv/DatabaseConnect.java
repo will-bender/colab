@@ -1,6 +1,8 @@
 package parsing_csv;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 import com.google.common.base.Throwables;
 
@@ -56,6 +58,10 @@ public class DatabaseConnect {
 
 	}
 
+	public DatabaseConnect() {
+		
+	}
+	
 	public DatabaseConnect(Iterator<CsvParsing> beanIterator) {
 		this.beanIterator = beanIterator;
 	}
@@ -188,7 +194,7 @@ public class DatabaseConnect {
 			}
 		}
 	}
-
+	
 	// if you do parallel, this should be synchronized
 	private void addSensorValue(double SensorValue, String sensorName) {
 		int foundSensorID = 0;
@@ -321,5 +327,53 @@ public class DatabaseConnect {
 			}
 		}
 	}
-
+	
+	//Below are the methods for finding pods
+	public List<Pod> getActivePods() {
+		String stmt_PodsInDeploymentTable = "SELECT Deployment.id, Deployment.pod_id, Deployment.active, Deployment.debug, "
+				+ "Deployment.deployment_url FROM Deployment WHERE active = 1";
+		//array list declared can be changed to anything else like linked list etc
+		List<Pod> Pods = new ArrayList<Pod>();
+		try {
+		rst = performSQLRequest(stmt_PodsInDeploymentTable);
+		
+		while (rst.next()) {
+			Pods.add(new Pod(rst.getInt("id"), rst.getInt("pod_id"), rst.getInt("pod_id"), rst.getInt("debug"), rst.getString("deployment_url")));
+			}
+		}
+		catch(SQLException e) {
+			System.out.println("There was an issue loking for active pods");
+			//put logger request here
+		}
+		finally {
+			closeDBConnections();	
+		}
+		
+		
+		
+		
+		return Pods;
+	}
+	
+	public ResultSet performSQLRequest(String query) throws SQLException {
+		stmt = con.createStatement();
+		rst = stmt.executeQuery(query);
+		return rst;
+	}
+	
+	public void closeDBConnections() {
+		try {
+			this.rst.close();
+			this.stmt.close();
+			this.con.close();
+		} catch (SQLException e) {
+			//this is not a serious issue keep here. The connections will close silently
+			System.out.println("One of the connections was null!");
+		}
+		
+		
+	}
+	
+	
+	
 }

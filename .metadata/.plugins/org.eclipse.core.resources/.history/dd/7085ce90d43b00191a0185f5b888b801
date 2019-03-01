@@ -1,0 +1,17 @@
+package parsing_csv;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	
+	void findDeploymentsOnDB (){
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		
+		
+	}
+	
+}
+
+

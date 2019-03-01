@@ -1,0 +1,337 @@
+package parsing_csv;
+
+import java.util.Iterator;
+import java.util.logging.Logger;
+import com.google.common.base.Throwables;
+
+import java.sql.*;
+
+public class DatabaseConnect {
+	public final ProblemLog troubleLog = new ProblemLog("choateLOG");
+	public final Logger log = troubleLog.logger;
+
+	private final String USERNAME = "escolab";
+	private final String PASSWORD = "$ondescool";
+	private final String DRIVER = "jdbc:mysql://";
+	private final String SERVER = "localhost"; // java can only connect on vulcan
+	private final String PORT = "3306";
+	private final String DB_NAME = "escolab";
+	private final String STATEMENT = DRIVER + SERVER + ":" + PORT + "/" + DB_NAME;
+	
+	private Iterator<CsvParsing> beanIterator;
+	private Connection con = null;
+	private Statement stmt = null;
+	ResultSet rst = null;
+	PreparedStatement insertPodLocation = null;
+	PreparedStatement insertSensorValue = null;
+	
+	private String test_current_sensor_values_query = "SELECT Sensor.sensor_name, SensorData.sensor_data FROM ((Location INNER JOIN SensorData ON"
+			+ " SensorData.time_stamp = (SELECT MAX(Location.time_stamp) FROM Location WHERE Location.pod_id = '7')) INNER JOIN Sensor ON Sensor.id = "
+			+ "SensorData.sensor_id) WHERE Location.deployment_id = (SELECT MAX(deployment_id) FROM Location WHERE Location.pod_id = '7') AND "
+			+ "Location.time_stamp = (SELECT MAX(time_stamp) FROM Location)";
+
+
+
+	// enumeration of all the constant DB PARAMETERS
+	private enum PARAMS {
+		// constants for the parameters in the headers of the database
+		
+		//PARAMETERS FOR SENSOR--Add more constants here if you get more sensors
+		temp("Temp"), ph("pH"), phmv("pHmv"), cond("Cond"), dopct("DOpct"), domgl("DOmgl"),
+		dogain("DOgain"), turb("Turb"), depth("Depth"),
+		//PARAMETERS FOR POD_LOCATION--
+		podid("PodID"), deploymentid("DeploymentID"), timestamp("Timestamp"), latitude("Latitude"),
+		longitude("Longitude"),gpstime("GPSTIME"), numofsatellites("NumOfSatellites"),
+		gpsquality("GPSQuality"), altitude("Altitude")
+		;//end parameters
+		private String PARAMS_SENSOR;
+
+		PARAMS(String params_sensor) {
+			this.PARAMS_SENSOR = params_sensor;
+		}
+
+		private String p() {
+			return PARAMS_SENSOR;
+		}
+
+	}
+
+	public DatabaseConnect() {
+		
+	}
+	
+	public DatabaseConnect(Iterator<CsvParsing> beanIterator) {
+		this.beanIterator = beanIterator;
+	}
+
+	public void connect() {
+		// connect to the database
+		try {
+			this.con = DriverManager.getConnection(STATEMENT, USERNAME, PASSWORD);
+		} catch (SQLException sqlException) {
+			log.severe("Trouble Connecting To DB "+ Throwables.getStackTraceAsString(sqlException));
+			System.exit(12);
+		}
+	}
+
+	public void checkFlags() {
+		// look for flagged data, last 10 records
+	}
+
+	public void last_record() {
+		// get most current record for checking
+	}
+
+	public void insertNewRecord() {
+		// insert new record
+		String STMT_podLocation = "INSERT " + "INTO " + "Location (pod_id,deployment_id,time_stamp,latitude,"
+				+ "longitude,gps_time,satellite_count,gps_quality,altitude)" + "VALUES" +  "(?,?,?,?,?,?,?,?,?)";
+
+		String STMT_sensorValue = "INSERT " + "INTO " + "SensorData (deployment_id,sensor_id,time_stamp,"
+				+ "sensor_data,valid,flagged)" + "VALUES" + "(?,?,?,?,?,?)";
+		try {
+			insertPodLocation = con.prepareStatement(STMT_podLocation);
+			insertSensorValue = con.prepareStatement(STMT_sensorValue);
+			
+			insertPodLocation.setDouble(8, 0); // need to add GPS QUALITY
+			insertPodLocation.setDouble(9, 0); // need to add ALTITUDE
+			noNewBeans:
+			while(beanIterator.hasNext()) {
+			CsvParsing aBean = beanIterator.next();
+
+			for (int i = 0; i < 16; i++) {
+				Object aBeanAttribute = null;
+				aBeanAttribute = aBean.getANY(i);
+
+				switch (i) {
+				case 0:	//Name of POD (int)
+					insertPodLocation.setInt(1, (int)aBeanAttribute);
+					//sets Deployment# if there is a new one in the db
+					//if there isn't then the most current deployment is used
+					int deploymentNum = checkForSeed((int) aBeanAttribute);
+					insertPodLocation.setInt(2, deploymentNum); // DEPLOYMENT #
+					insertSensorValue.setInt(1, deploymentNum); // DEPLOYMENT #
+					break;
+				case 1:	//TimeStamp of Record (java.sql.Timestamp)
+					//if the latest method returns false, then there are no new records to insert and We should break out of the loop. 
+					if (!latestORresourceful_value((Timestamp) aBeanAttribute, aBean.getName())) {
+						log.info("NOT PUTTING ANYMORE RECORDS");
+						break noNewBeans;
+					}
+					insertPodLocation.setTimestamp(3, (Timestamp) aBeanAttribute);
+					insertSensorValue.setTimestamp(3, (Timestamp) aBeanAttribute);
+					break;
+				case 2:	//BatteryVoltage (double)
+					break;
+				case 3:	//Temperature (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.temp.p());
+					break;
+				case 4:	//PH (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.ph.p());
+					break;
+				case 5: //PHmv  (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.phmv.p());
+					break;
+				case 6:	//Conductivity (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.cond.p());
+					break;
+				case 7:// DOpct (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.dopct.p());
+					break;
+				case 8:// DOmgL (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.domgl.p());
+					break;
+				case 9:// DOgain (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.dogain.p());
+					break;
+				case 10:// Turbidity (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.turb.p());
+					break;
+				case 11:// Depth (double)
+					addSensorValue((double) aBeanAttribute, PARAMS.depth.p());
+					break;
+				case 12:// Latitude (double)
+					insertPodLocation.setDouble(4, (double) aBeanAttribute);
+					break;
+				case 13:// Longitude (double)
+					insertPodLocation.setDouble(5, (double) aBeanAttribute);
+					break;
+				case 14:// GPS Time (double)
+					insertPodLocation.setDouble(6, (double) aBeanAttribute);
+					break;
+				case 15:// Number of Satellites (double)
+					insertPodLocation.setDouble(7, (double) aBeanAttribute);
+					break;
+				default:
+					log.severe("COULD NOT ASSIGN A VARIABLE");
+					break;
+				}
+			}
+			
+//			System.out.println(insertPodLocation.toString());// print of the SQL Query
+			try {
+				int pod_location_response = insertPodLocation.executeUpdate();
+			} catch (SQLException sqlException) {
+				log.severe(Throwables.getStackTraceAsString(sqlException)+ "\n" + "INSERT_POD_LOC: " + insertPodLocation.toString());
+			}
+//			if (latestORresourceful_value(aBean.getTimeStampFromDate(), aBean.getName())) {
+//				break noNewBeans;
+//			}
+			}
+
+		} catch (SQLException sqlException) {
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+			// sqlException.printStackTrace();
+		}
+		finally {
+			try {
+				rst.close();
+				stmt.close();
+			} catch (SQLException sqlException) {
+				log.severe(Throwables.getStackTraceAsString(sqlException));
+			}
+		}
+	}
+
+	// if you do parallel, this should be synchronized
+	private void addSensorValue(double SensorValue, String sensorName) {
+		int foundSensorID = 0;
+		try {
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("SELECT Sensor.id FROM Sensor WHERE Sensor.sensor_name =" + "'" + sensorName + "'");
+			while (rst.next()) {
+				System.out.println(rst.getString(1));
+				foundSensorID = Integer.parseInt(rst.getString(1));
+			}
+
+			insertSensorValue.setInt(2, foundSensorID);
+			insertSensorValue.setDouble(4, SensorValue);
+			// need to create error checking method for these two below
+			insertSensorValue.setBoolean(5, true); // is valid parameter
+			insertSensorValue.setBoolean(6, false);// is flagged parameter
+
+			insertSensorValue.executeUpdate(); // insert for sensor value
+
+		} catch (SQLException sqlException) {
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+		} 
+
+	}
+	
+	private int checkForSeed(int podID) {
+		//look for my pod name
+		//look for the latest deployment
+		//look for the latest date entry
+		int deploymentNum = 1;
+		try {
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("SELECT Deployment.id FROM Deployment WHERE Deployment.pod_id=" + 
+					"'" + podID + "'"+"ORDER BY Deployment.id DESC LIMIT 1");
+			while(rst.next()) {
+				deploymentNum = rst.getInt(1);
+			}
+			
+		} catch (SQLException sqlException) {
+			sqlException.printStackTrace();
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+		}
+		
+		return deploymentNum;
+	}
+	private boolean latestORresourceful_value(Timestamp givenTimeStamp, int podID) {
+		
+		try {
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("SELECT Location.time_stamp FROM "+ "Location WHERE Location.pod_id="+"'" +
+			podID + "'"+"AND Location.time_stamp="+"'"+givenTimeStamp+"'");
+			if(rst.next()) {
+				//there was a value there already for the newest records
+				return false;
+			}
+		} catch (SQLException sqlException) {
+			sqlException.printStackTrace();
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+		}
+		
+		
+		return true;
+	}
+	
+
+	// // while(beanIterator_M.hasNext()) { // part of printing out entire CSV file
+	// CsvParsing aBean = beanIterator_M.next();
+	// for (int i = 0; i < 16; i++) {
+	// Object aBeanAttribute = null;
+	// try {
+	// aBeanAttribute = aBean.getANY(i);
+	// if(aBeanAttribute == null) {
+	// aBeanAttribute = -1;
+	// }
+	// }
+	// catch(Exception e) {
+	// System.exit(10);
+	// }
+	// finally {
+	// System.out.print( aBeanAttribute + " | ");
+	// }
+	// }
+	// System.out.println("");
+	// }
+
+	public void end_connect() {
+		// clean up and end the connection to the database
+	}
+	
+	//will display the bean that was just inserted into the database from the database
+	//This method will be implemented on Aug 10 to examine why the Parser puts the same entry inside different times
+	//IE. This is a concurrency check with the bean that was just read in from the CSV file.
+	public void proveInserted() {
+		try {
+			stmt = con.createStatement();
+//			rst = stmt.executeQuery("select * from Pod");
+			rst = stmt.executeQuery(test_current_sensor_values_query);
+			String resultant = "";
+			while (rst.next()) {
+//				System.out.println(rst.getString(1) + rst.getString(2));
+				resultant = resultant.concat(rst.getString(1) +" "+ rst.getString(2) + "\n");
+			}
+			log.info("Most Current Bean From Database \n" +resultant);
+		} catch (SQLException sqlException) {
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+		}
+	}
+	
+	
+	
+	public void showExample() {
+		try {
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("select * from Pod");
+			String resultant = "";
+			while (rst.next()) {
+				System.out.println(rst.getString(1));
+				resultant = resultant.concat(rst.getString(1));
+			}
+			log.info(resultant);
+		} catch (SQLException sqlException) {
+			log.severe(Throwables.getStackTraceAsString(sqlException));
+		} finally {
+			try {
+				rst.close();
+				stmt.close();
+			} catch (SQLException sqlException) {
+				log.severe(Throwables.getStackTraceAsString(sqlException));
+
+			}
+		}
+	}
+
+	//Below are the methods for finding pods
+	public void findActivePods() {
+		String stmt_PodsInDeploymentTable = "select Deployment.id, Deployment.pod_id, Deployment.active, Deployment.debug, "
+				+ "Deployment.deployment_url from Deployment where active = 1"
+	}
+	
+	
+	
+}

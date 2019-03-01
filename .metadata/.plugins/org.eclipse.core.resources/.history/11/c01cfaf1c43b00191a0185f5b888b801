@@ -1,0 +1,144 @@
+package parsing_csv;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.SocketException;
+import java.util.ArrayList;
+
+import org.apache.commons.net.ftp.Configurable;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
+
+public class outboundFTP extends FTP implements Configurable{
+
+	String serverAddress, username, password,filenamePath;
+	int port = 21, javaFilePathNum = 13;
+	String javaFilePath = "/Users/will/test";
+	FTPClient ftpClient;
+
+	public void start_test() throws IOException {
+		System.out.println("Starting the test");
+		start("dlpuser@dlptest.com", "puTeT3Yei1IJ4UYT7q0r", "ftp.dlptest.com", "ST123_0000001072_DATI_20190206_0400.TXT");
+	}
+	
+	public void start(String username, String password, String serverAddress, String filenamePath) throws IOException {
+		
+	ftpClient = new FTPClient();
+	setGlobalVariables(username, password, serverAddress, filenamePath);
+	
+	try {
+		connect();
+		
+		listFilesOnServer();
+		diagnosticInformation();
+		
+		download();
+	}
+	catch(IOException e) {
+		System.out.println("Error: "+ e.getMessage());
+		e.printStackTrace();
+	}
+	finally {
+		disconnect();
+	}			
+	}
+	
+	public void setGlobalVariables(String username, String password, String serverAddress, String filenamePath) {
+		this.username = username;
+		this.password = password;
+		this.serverAddress = serverAddress;
+		this.filenamePath = filenamePath;
+	}
+	
+	public void diagnosticInformation() throws SocketException, IOException {
+		
+		System.out.println("Connected? : "+ftpClient.isConnected());
+		System.out.println("Status info: "+ftpClient.getStatus());
+		System.out.println("Availabile? : "+ftpClient.isAvailable());
+	}
+	
+	public void connect() throws IOException {
+		ftpClient.connect(serverAddress, port);
+		System.out.println("Connected to: "+serverAddress+" "+ftpClient.getReplyString());
+		ftpClient.login(username, password);
+		ftpClient.enterLocalPassiveMode();
+		
+		int reply = ftpClient.getReplyCode();
+		if(!FTPReply.isPositiveCompletion(reply)) {
+			ftpClient.disconnect();
+			System.out.println("FTP Pod refused connection");
+			System.exit(1);
+		}
+	}
+	
+	public void disconnect() throws IOException {
+		if(ftpClient.isConnected()) {
+		ftpClient.logout();
+		ftpClient.disconnect();
+		}
+	}
+	public void download() throws IOException {
+		File downloadedFilePath = new File(javaFilePath);
+		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadedFilePath));
+        System.out.println("Attempting to retrieve the file");
+		boolean success = ftpClient.retrieveFile(filenamePath, outputStream);
+        outputStream.close();
+        
+        if(success) {
+        	System.out.println("File downloaded successfully ");
+        	System.out.println("Path to downloaded File: " + javaFilePath);
+        }
+        else {
+        	System.out.println("File download error: " + ftpClient.getReplyString());
+        	System.out.println("Check that File is actually on the Pod");
+        	System.out.println("Retrying Smart Download");
+//        	trySmartDownloadFile();
+        }
+	}
+	
+	public void trySmartDownloadFile() throws IOException {
+		String fileName = "", fileNamePattern = "WNF";
+		File dynamicDownloadPath;
+		OutputStream outputStream;
+		ArrayList<File> Files = new ArrayList<File>();
+		for (int fileNum = 0; fileNum < numFilesOnServer(); fileNum++) {
+			fileName = ftpClient.listFiles()[fileNum].toString();
+			if(fileName.contains(fileNamePattern)) {
+				dynamicDownloadPath = new File(javaFilePath.substring(0, javaFilePathNum).concat(fileName));
+				outputStream = new BufferedOutputStream(new FileOutputStream(dynamicDownloadPath));
+				ftpClient.retrieveFile(filenamePath, outputStream);
+		        outputStream.close();
+//				Files.add(ftpClient.li);
+			}
+			}
+		
+		
+	}
+	
+	public int numFilesOnServer() throws IOException {
+		int numFiles = ftpClient.listFiles().length;
+		return numFiles;
+	}
+	
+	public void listFilesOnServer() throws IOException {
+		System.out.println("Number of files on server: "+ftpClient.listFiles().length);
+		System.out.println("List of files on the server: ");
+		int numFiles = ftpClient.listFiles().length;
+		for (int fileDetails = 0; fileDetails < numFiles; fileDetails++) {
+			System.out.println(ftpClient.listFiles()[fileDetails]);
+		}
+		
+	}
+	
+	
+	public void configure(FTPClientConfig config) {
+		
+	}
+
+}

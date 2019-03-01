@@ -1,0 +1,21 @@
+package parsing_csv;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	List<Pod> listOfPods;
+	
+	
+	public void getListOfPods() throws SQLException{
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		
+		return dbConnect.getActivePods();
+	}
+	
+}
+

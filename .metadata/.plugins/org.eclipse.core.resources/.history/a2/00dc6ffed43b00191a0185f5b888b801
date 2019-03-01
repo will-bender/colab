@@ -1,0 +1,20 @@
+package parsing_csv;
+
+import java.util.ArrayList;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	List<Pod> listOfPods;
+	
+	void findDeploymentsOnDB (){
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		
+		
+	}
+	
+}
+
+

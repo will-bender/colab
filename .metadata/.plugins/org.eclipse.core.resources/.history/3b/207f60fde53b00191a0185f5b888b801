@@ -1,0 +1,56 @@
+package parsing_csv;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	public Pod pod;
+	List<Pod> listOfPods;
+	
+	
+	public void getListOfPodsInDB() {
+		dbConnect = new DatabaseConnect();
+		dbConnect.connect();
+		
+		setListOfPods(dbConnect.getActivePods());
+		removeDuplicatePods();
+	}
+
+
+	public List<Pod> getListOfPods() {
+		return listOfPods;
+	}
+
+
+	public void setListOfPods(List<Pod> listOfPods) {
+		this.listOfPods = listOfPods;
+	}
+	
+	//When two pods with two Pod_id's are present remove the pod with the lower "id" parameter.
+	//This method exists when someone forgets to switch the "active" parameter in the database. This is problematic because if there are two active pods with
+	//the same pod_id's then we will unknowingly add data to both deployments.
+	//After the pod is re-deployed, it's former deployment should be marked as active = 0;
+	public void removeDuplicatePods() {
+		//assuming that pod_id and id could be null im using a try catch
+		//create an array of pod_id's
+//		int[] pod_ids = new int[getListOfPods().size()];
+		ArrayList<Integer> pod_ids = new ArrayList<Integer>();
+		try {
+			for(Pod pod: getListOfPods()) {
+				pod_ids.add();
+			}
+				
+		}
+		catch (Exception e){
+			System.out.println("Put a logger statement here there was a null pod_id or id value");
+		}
+		
+	}
+	
+	
+	
+}
+

@@ -1,0 +1,18 @@
+package parsing_csv;
+
+import java.util.Iterator;
+
+public class Pod {
+
+	private int id, pod_id, active,debug ;
+	private String deployment_url;
+	private Iterator<CsvParsing> beanIterator;
+	
+	public Pod(int id, int pod_id, int active, int debug ) {
+		
+	}
+	
+	
+	
+	
+}

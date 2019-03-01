@@ -21,8 +21,16 @@ import com.opencsv.bean.CsvToBeanBuilder;
 	
 	public static void main(String[] args) {
 		
+		FindDeployments Pods = new FindDeployments();
+		Pods.getListOfPodsInDB();
+		List<Pod> listOfPods = Pods.getListOfPods(); 
 		
-		try {
+		for (Pod PodInList: listOfPods) {
+			System.out.println(PodInList.getPod_id());
+		}
+		
+		
+		/*try {
 			outboundFTP ftp = new outboundFTP();
 //			ftp.diagnosticInformation();
 			ftp.start_test();
@@ -30,7 +38,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 		}
 		catch(Exception e) {
 			System.out.println("Error: "+ e);
-		}
+		}*/
 		
 		
 		Iterator<CsvParsing> beanIterator = null;

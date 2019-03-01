@@ -1,0 +1,17 @@
+package parsing_csv;
+
+public class FindDeployments {
+	
+	public DatabaseConnect dbConnect;
+	dbConnect = new DatabaseConnect(beanIterator);
+	dbConnect.connect();
+	dbConnect.showExample();
+	dbConnect.insertNewRecord();
+	dbConnect.proveInserted();
+	
+	
+	void findDeploymentsOnDB(){
+		
+	}
+	
+}

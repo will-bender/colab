@@ -6,12 +6,15 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="con." key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="con.clo"/>
+			<item value="con."/>
+			<item value="check"/>
 			<item value="moment"/>
 			<item value="stmt.ex"/>
 			<item value="rst.executeQuery"/>
@@ -24,7 +27,6 @@
 			<item value="Throwables.getStackTraceAsString(sqlException)"/>
 			<item value="catch"/>
 			<item value="12345"/>
-			<item value="Float"/>
 		</list>
 		<list key="replacehistory">
 			<item value="double"/>

@@ -1,0 +1,72 @@
+package parsing_csv;
+
+import java.util.Iterator;
+
+public class Pod {
+
+	private int id, pod_id, active, debug ;
+	private String deployment_url;
+	private Iterator<CsvParsing> beanIterator;
+	
+	//set everything except for the beanIterator. (beanIterator will be assigned later)
+	public Pod(int id, int pod_id, int active, int debug, String deployment_url ) {
+		this.id = id;
+		this.setPod_id(pod_id);
+		this.active = active;
+		this.debug = debug;
+		this.deployment_url = deployment_url;
+	}
+
+	//getter and setter methods for the instance variables
+	public int getPod_id() {
+		return pod_id;
+	}
+
+	public void setPod_id(int pod_id) {
+		this.pod_id = pod_id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getActive() {
+		return active;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
+	}
+
+	public int getDebug() {
+		return debug;
+	}
+
+	public void setDebug(int debug) {
+		this.debug = debug;
+	}
+
+	public String getDeployment_url() {
+		return deployment_url;
+	}
+
+	public void setDeployment_url(String deployment_url) {
+		this.deployment_url = deployment_url;
+	}
+
+	public Iterator<CsvParsing> getBeanIterator() {
+		return beanIterator;
+	}
+
+	public void setBeanIterator(Iterator<CsvParsing> beanIterator) {
+		this.beanIterator = beanIterator;
+	}
+	
+	
+	
+	
+}
